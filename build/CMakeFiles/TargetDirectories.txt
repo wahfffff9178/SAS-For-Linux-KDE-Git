@@ -1,0 +1,9 @@
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/sas-screen.dir
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/edit_cache.dir
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/rebuild_cache.dir
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/list_install_components.dir
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/install.dir
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/install/local.dir
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/install/strip.dir
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/sas-screen_autogen_timestamp_deps.dir
+/home/ZhangQingXin/Documents/Git/SAS-For-Linux/build/CMakeFiles/sas-screen_autogen.dir
