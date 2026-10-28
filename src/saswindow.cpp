@@ -28,6 +28,8 @@
 #include <QDBusConnection>
 #include <QMessageBox>
 #include <QDBusInterface>
+#include <QTimer>
+#include <QApplication>
 
 namespace {
 
@@ -209,16 +211,39 @@ void SasWindow::rebuildUi()
                                     QDBusConnection::systemBus());
                 seat.call(QStringLiteral("SwitchToGreeter"));
             });
-        } else if (label == QStringLiteral("更改密码")) { // 👈 加上这个拦截！
+        } else if (label == QStringLiteral("更改密码")) {
             connect(btn, &QPushButton::clicked, this, [this] {
-                // 不再调用 m_actions->run，而是弹出我们做好的 PasswordDialog
                 PasswordDialog dlg(this);
                 dlg.exec();
-                // 弹窗关闭后，重新激活 SAS 界面
                 this->activateWindow();
                 this->raise();
             });
+        } else if (label == QStringLiteral("注销")) {
+            connect(btn, &QPushButton::clicked, this, [this] {
+                hideSas();
+                // 1. 发送 KDE 标准注销请求
+                QDBusInterface shutdown(QStringLiteral("org.kde.Shutdown"),
+                                        QStringLiteral("/Shutdown"),
+                                        QStringLiteral("org.kde.Shutdown"),
+                                        QDBusConnection::sessionBus());
+                shutdown.call(QStringLiteral("logout"));
+
+                // 2. 关键：0.5秒后，让 sas-screen 自己彻底退出！
+                // 这样 KDE 的注销流程就不会因为等待它而卡住 60 秒了。
+                QTimer::singleShot(500, qApp, &QApplication::quit);
+            });
+        } else if (label == QStringLiteral("锁定")) {
+            connect(btn, &QPushButton::clicked, this, [this] {
+                hideSas();
+                // FreeDesktop 标准锁屏接口
+                QDBusInterface screenSaver(QStringLiteral("org.freedesktop.ScreenSaver"),
+                                           QStringLiteral("/ScreenSaver"),
+                                           QStringLiteral("org.freedesktop.ScreenSaver"),
+                                           QDBusConnection::sessionBus());
+                screenSaver.call(QStringLiteral("Lock"));
+            });
         } else {
+            // 其他按钮（如任务管理器）继续走 JSON 外部命令
             const bool exitAfter = m_actions->exitAfter(label);
             connect(btn, &QPushButton::clicked, this, [this, label, exitAfter] {
                 m_actions->run(label);
@@ -228,8 +253,6 @@ void SasWindow::rebuildUi()
         }
         centerLayout->addWidget(btn, 0, Qt::AlignHCenter);
     }
-
-    centerLayout->addSpacing(20);
 
     // 取消按钮
     auto *cancel = new QPushButton(QStringLiteral("取消"), this);

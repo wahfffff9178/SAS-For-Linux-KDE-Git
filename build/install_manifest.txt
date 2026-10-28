@@ -1,2 +1,0 @@
-/usr/local/bin/sas-screen
-/usr/local/share/sas-screen/sas-screen.json
